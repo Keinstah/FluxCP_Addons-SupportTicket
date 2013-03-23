@@ -1,0 +1,61 @@
+-	script	atcmd_ticket_notify	-1,{
+	OnInit:
+		bindatcmd("checkunread", "atcmd_ticket_notify::OnAtcommand");
+		bindatcmd("cu", "atcmd_ticket_notify::OnAtcommand");
+	end;
+	
+	OnAtcommand:
+		set .@unreadmsg$, "You have %d unread support tickets.";
+		set .@sql$, "SELECT id, department, ticket_read FROM cp_support_tickets WHERE ";
+		
+		if (getgmlevel() > 0) {
+			set .@sql$, .@sql$ + "1";
+		} else {
+			set .@sql$, .@sql$ + "account_id = " + getcharid(3) + " AND unread = 1";
+		}
+		set .@count, query_sql(.@sql$, @id, @department, @ticket_read);
+		if (.@count) {
+			if (getgmlevel() == 0) {
+				dispbottom(sprintf(.@unreadmsg$, .@count));
+				end;
+			}
+			
+			if (.@count > 1) {
+				set .@ticket_count, 0;
+				
+				for (set .@i, 0; .@i < getarraysize(@id); .@i++) {
+					set .@isRead, 0;
+					
+					query_sql("SELECT group_id FROM cp_support_dep WHERE id = " + @department[.@i], @group_id);
+					
+					explode(.@tickets_read, @ticket_read[.@i], ",");
+					
+					for (set .@j, 0; .@j < getarraysize(.@tickets_read); .@j++) {
+						if (.@tickets_read[.@j] == getcharid(3)) {
+							set .@isRead, 1;
+						}
+					}
+					
+					if (@group_id <= getgmlevel() && .isRead == 0) {
+						.@ticket_count++;
+					}
+				}
+				dispbottom(sprintf(.@unreadmsg$, .@count));
+				end;
+			} else {
+				query_sql("SELECT group_id FROM cp_support_dep WHERE id = " + @department, @group_id);
+				
+				if (@group_id <= getgmlevel()) {
+					dispbottom(sprintf(.@unreadmsg$, .@count));
+					end;
+				} else {
+					dispbottom(sprintf(.@unreadmsg$, 0));
+					end;
+				}
+			}
+		} else {
+			dispbottom(sprintf(.@unreadmsg$, 0));
+			end;
+		}
+	end;
+}
