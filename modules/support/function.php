@@ -354,7 +354,7 @@ if (!function_exists("isSubscribed"))
 	}
 }
 
-$unreads = function($account_id, $server, $group_id) {
+function getUnread($account_id, $server, $group_id) {
 	$support_tickets= Flux::config('FluxTables.support_tickets');
 	$support_reply 	= Flux::config('FluxTables.support_reply');
 	$support_dep 	= Flux::config('FluxTables.support_dep');
@@ -390,6 +390,6 @@ $unreads = function($account_id, $server, $group_id) {
 	return (int) $num;
 };
 $unread = 0;
-if ($session->isLoggedIn()) $unread = $unreads($session->account->account_id, $session->loginAthenaGroup, $session->account->group_id);
+if ($session->isLoggedIn()) $unread = getUnread($session->account->account_id, $session->loginAthenaGroup, $session->account->group_id);
 
 ?>

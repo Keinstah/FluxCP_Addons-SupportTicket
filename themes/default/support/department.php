@@ -28,7 +28,7 @@
 					<?php foreach ($groups as $name => $level): ?>
 					<option value='<?= (int) $level ?>'><?= htmlspecialchars($name) ?></option>
 					<?php endforeach ?>
-				<select>
+				</select>
 			</td>
 		</tr>
 		<tr>
