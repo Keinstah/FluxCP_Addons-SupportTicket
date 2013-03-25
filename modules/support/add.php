@@ -4,6 +4,7 @@ require_once('function.php');
 require_once 'Flux/Mailer.php';
 Flux::config('MailerFromName', Flux::config('SupportFromName'));
 $mail = new Flux_Mailer();
+$group_col = getGroupCol($server);
 
 $title = Flux::message('SupportCreateTitle');
 
@@ -132,7 +133,8 @@ if (isset($_POST['account_id']))
 
 			if (Flux::config('EnableSubscribing'))
 			{
-				$sql = "SELECT * FROM $server->loginDatabase.login WHERE group_id >= ?";
+
+				$sql = "SELECT * FROM $server->loginDatabase.login WHERE $group_col >= ?";
 				$sth = $server->connection->getStatement($sql);
 				$sth->execute(array(AccountLevel::LOWGM));
 				$account_res = $sth->fetchAll();

@@ -10,6 +10,7 @@ $tableName			= "$server->loginDatabase.$support_tickets";
 $tableName2			= "$server->loginDatabase.$support_reply";
 $ticket_id			= (int) $params->get('id');
 $errorMessage		= NULL;
+$group_col 			= getGroupCol($server);
 
 if (isset($_POST['save']))
 {
@@ -108,7 +109,7 @@ if (isset($_POST['save']))
 
 if (isset($_POST['delete']))
 {
-	if ($session->account->group_id < Flux::config('TicketDelGroup'))
+	if ($session->account->$group_col < Flux::config('TicketDelGroup'))
 	{
 		$errorMessage = Flux::message('InsufficientPermission');
 	} else {
@@ -144,7 +145,7 @@ if ($sth->rowCount() === 0)
 {
 	$ticket_res = NULL;
 } else {
-	if ($session->account->account_id != $ticket_res->account_id && $session->account->group_id < getDepartment($server, $ticket_res->id)->group_id)
+	if ($session->account->account_id != $ticket_res->account_id && $session->account->$group_col < getDepartment($server, $ticket_res->id)->group_id)
 	{
 		$ticket_res = NULL;
 	}

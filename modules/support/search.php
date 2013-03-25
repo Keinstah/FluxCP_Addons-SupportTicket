@@ -10,6 +10,7 @@ $tableName		= "$server->loginDatabase.$support_tickets";
 $tableName3		= "$server->loginDatabase.$support_dep";
 $errorMessage	= NULL;
 $search_res		= NULL;
+$group_col 		= getGroupCol($server);
 
 if (isset($_POST['take_action']))
 {
@@ -143,7 +144,7 @@ if (isset($_POST['take_action']))
 
 					$res = $sth->fetch();
 
-					if ($session->account->group_id < Flux::config('TicketOpenGroup'))
+					if ($session->account->$group_col < Flux::config('TicketOpenGroup'))
 					{
 						$errorMessage = Flux::message('InsufficientPermission');
 						break;
@@ -189,7 +190,7 @@ if (isset($_POST['take_action']))
 
 					$res = $sth->fetch();
 
-					if ($session->account->group_id < Flux::config('TicketCloseGroup'))
+					if ($session->account->$group_col < Flux::config('TicketCloseGroup'))
 					{
 						$errorMessage = Flux::message('InsufficientPermission');
 						break;
@@ -231,7 +232,7 @@ if (isset($_POST['take_action']))
 
 				case "delete":
 					// deleting the support ticket
-					if ($session->account->group_id < Flux::config('TicketDelGroup'))
+					if ($session->account->$group_col < Flux::config('TicketDelGroup'))
 					{
 						$errorMessage = Flux::message('InsufficientPermission');
 						break;
@@ -282,7 +283,7 @@ if (isset($_POST['take_action']))
 
 					$res = $sth->fetch();
 
-					if ($session->account->group_id < Flux::config('TicketResolveGroup'))
+					if ($session->account->$group_col < Flux::config('TicketResolveGroup'))
 					{
 						$errorMessage = Flux::message('InsufficientPermission');
 						break;
@@ -339,7 +340,7 @@ if (isset($_GET['q']))
 		$errorMessage = sprintf(Flux::message('TicketSearchMin'), Flux::config('TicketSearchMinLen'));
 	} else {
 
-		if ($session->account->group_id < Flux::config('TicketStaffSearch')) $account_id = (int) $session->account->account_id;
+		if ($session->account->$group_col < Flux::config('TicketStaffSearch')) $account_id = (int) $session->account->account_id;
 	
 		$sql = "WHERE";
 		$bind = array();
@@ -352,7 +353,7 @@ if (isset($_GET['q']))
 			$sql .= " subject LIKE ? OR id LIKE ?";
 			$count_sql = " subject LIKE ? OR id LIKE ?";
 
-			if ($session->account->group_id >= Flux::config('TicketStaffSearch'))
+			if ($session->account->$group_col >= Flux::config('TicketStaffSearch'))
 			{
 				$sql .= " OR account_id LIKE ? OR char_id LIKE ? OR email LIKE ?";
 				$count_sql .= " OR account_id LIKE ? OR char_id LIKE ? OR email LIKE ?";
@@ -376,7 +377,7 @@ if (isset($_GET['q']))
 
 			$sqlpartial = "SELECT id FROM $tableName3 WHERE group_id > ?";
 			$sth = $server->connection->getStatement($sqlpartial);
-			$sth->execute(array($session->account->group_id));
+			$sth->execute(array($session->account->$group_col));
 			$group_res = $sth->fetchAll();
 
 			if ($sth->rowCount() > 0)

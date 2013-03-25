@@ -12,7 +12,7 @@
 <?php elseif (!empty($successMessage)): ?>
 	<p class="green"><?php echo htmlspecialchars($successMessage) ?></p>
 <?php endif ?>
-<?php if (count($ticket_res) && $session->account->group_id >= Flux::config('TicketEditGroup')): ?>
+<?php if (count($ticket_res) && $session->account->$group_col >= Flux::config('TicketEditGroup')): ?>
 	<p><?= Flux::message('TicketEditNotice') ?></p>
 <form action="<?php echo $this->urlWithQs ?>" method="post" class="generic-form">
 	<input type='hidden' name='ticket_id' value='<?= (int) $ticket_id ?>' />

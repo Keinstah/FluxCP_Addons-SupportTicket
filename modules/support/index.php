@@ -6,6 +6,7 @@ $title = Flux::message('SupportTitle');
 
 $support_tickets 	= Flux::config('FluxTables.support_tickets');
 $tableName			= "{$server->loginDatabase}.{$support_tickets}";
+$group_col 			= getGroupCol($server);
 
 $sqlpartial = "WHERE account_id = ?";
 $bind = array((int) $session->account->account_id);
@@ -23,5 +24,4 @@ $sql  = $paginator->getSQL("SELECT * FROM $tableName $sqlpartial");
 $sth  = $server->connection->getStatement($sql);
 $sth->execute($bind);
 $ticket_res = $sth->fetchAll();
-
 ?>

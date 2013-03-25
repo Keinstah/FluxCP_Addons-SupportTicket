@@ -29,28 +29,28 @@
 						Subscribe
 					</button>
 				</td>
-				<?php if ($session->account->group_id >= Flux::config('TicketCloseGroup')): ?>
+				<?php if ($session->account->$group_col >= Flux::config('TicketCloseGroup')): ?>
 					<td><button title='Close' name='take_action' value='close' style='background:none;border:none;cursor:pointer'>
 							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/close.png' ?>' alt='Close' border='' />
 							Close
 						</button>
 					</td>
 				<?php endif ?>
-				<?php if ($session->account->group_id >= Flux::config('TicketOpenGroup')): ?>
+				<?php if ($session->account->$group_col  >= Flux::config('TicketOpenGroup')): ?>
 					<td><button title='Open' name='take_action' value='open' style='background:none;border:none;cursor:pointer'>
 							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/open.png' ?>' alt='Open' border='' />
 							Open
 						</button>
 					</td>
 				<?php endif ?>
-				<?php if ($session->account->group_id >= Flux::config('TicketResolveGroup')): ?>
+				<?php if ($session->account->$group_col  >= Flux::config('TicketResolveGroup')): ?>
 					<td><button title='Resolve' name='take_action' value='resolve' style='background:none;border:none;cursor:pointer'>
 							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/resolve.png' ?>' alt='Resolve' border='' />
 							Resolve
 						</button>
 					</td>
 				<?php endif ?>
-				<?php if ($session->account->group_id >= Flux::config('TicketDelGroup')): ?>
+				<?php if ($session->account->$group_col  >= Flux::config('TicketDelGroup')): ?>
 					<td><button title='Delete' name='take_action' value='delete' onclick="if(!confirm('Are you sure about this?')) return false;" style='background:none;border:none;cursor:pointer'>
 							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/delete.png' ?>' alt='Delete' border='' />
 							Delete
@@ -73,16 +73,16 @@
 	</tr>
 	<?php foreach ($ticket_res as $row): ?>
 	<tr>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><input type='checkbox' class='id' name='ticket_id[]' value='<?= (int) $row->id ?>' /></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date("F j", strtotime($row->datetime_submitted)) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><a href='<?= getURL($row->id, $this->url('support', 'view')) ?>'><?= "#".$row->id." - ".htmlspecialchars($row->subject) ?></a></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getDepartment($server, (int)$row->department)->name ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getStatus($row->status) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getPriority($row->priority) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date(Flux::config('DateTimeFormat'), strtotime($row->datetime_updated)) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><input type='checkbox' class='id' name='ticket_id[]' value='<?= (int) $row->id ?>' /></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date("F j", strtotime($row->datetime_submitted)) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><a href='<?= getURL($row->id, $this->url('support', 'view')) ?>'><?= "#".$row->id." - ".htmlspecialchars($row->subject) ?></a></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getDepartment($server, (int)$row->department)->name ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getStatus($row->status) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getPriority($row->priority) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date(Flux::config('DateTimeFormat'), strtotime($row->datetime_updated)) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'>
 			<a href='<?= getURL($row->id, $this->url('support', 'view')) ?>'>View</a>
-			<?php if ($session->account->group_id >= Flux::config('TicketEditGroup')): ?>
+			<?php if ($session->account->$group_col >= Flux::config('TicketEditGroup')): ?>
 				| <a href='<?= getURL($row->id, $this->url('support', 'edit')) ?>'>Edit</a>
 			<?php endif ?>
 		</td>

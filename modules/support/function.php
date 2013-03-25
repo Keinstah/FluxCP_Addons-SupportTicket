@@ -213,6 +213,7 @@ if (!function_exists("isRead"))
 		$tableName		= "$server->loginDatabase.$support_tickets";
 		$tableName2		= "$server->loginDatabase.$support_reply";
 		$tableName3		= "$server->loginDatabase.$support_dep";
+		$group_col 		= getGroupCol($server);
 
 		$sql = "SELECT * FROM $tableName WHERE id = ? LIMIT 1";
 		$sth = $server->connection->getStatement($sql);
@@ -279,7 +280,7 @@ if (!function_exists("getGroupID"))
 		// account_id is invalid
 		if ((int)$account_id === 0) return FALSE;
 
-		$col = ($server->isRenewal ? "group_id" : "level");
+		$col = getGroupCol($server);
 		$sql = "SELECT $col FROM $server->loginDatabase.login WHERE account_id = ?";
 		$sth = $server->connection->getStatement($sql);
 		$sth->execute(array((int) $account_id));
@@ -293,6 +294,21 @@ if (!function_exists("getGroupID"))
 }
 
 /*
+ * @desc - To get the group_id of account_id
+ * @params (int) $account_id, (object) $server
+ */
+if (!function_exists("getGroupCol"))
+{
+	function getGroupCol($server)
+	{
+		$sql = "SHOW COLUMNS FROM $server->loginDatabase.login LIKE 'group_id'";
+		$sth = $server->connection->getStatement($sql);
+		$sth->execute();
+		return ($sth->rowCount() ? 'group_id' : 'level');
+	}
+}
+
+/*
  * @desc - To check if the user is subscribed to the ticket
  * @params (int) $ticket_id, (int) $account_id, (object) $server
  */
@@ -302,18 +318,19 @@ if (!function_exists("isSubscribed"))
 	{
 		$support_tickets = Flux::config('FluxTables.support_tickets');
 		$support_dep 	 = Flux::config('FluxTables.support_dep');
+		$group_col 		 = getGroupCol($server);
 
 		// account_id is invalid
 		if ((int)$account_id === 0) return FALSE;
 		if ((int)$ticket_id === 0) return FALSE;
 
-		$sql = "SELECT group_id FROM $server->loginDatabase.login WHERE account_id = ? LIMIT 1";
+		$sql = "SELECT $group_col FROM $server->loginDatabase.login WHERE account_id = ? LIMIT 1";
 		$sth = $server->connection->getStatement($sql);
 		$sth->execute(array((int) $account_id));
 
 		if ($sth->rowCount() === 0) return FALSE;
 
-		if ($sth->fetch()->group_id >= AccountLevel::LOWGM)
+		if ($sth->fetch()->$group_col >= AccountLevel::LOWGM)
 		{
 			$sql = "SELECT subscribe FROM $server->loginDatabase.$support_dep WHERE account_id = ? LIMIT 1";
 			$sth->execute(array((int) $account_id));
@@ -361,6 +378,7 @@ function getUnread($account_id, $server, $group_id) {
 	$tableName		= "$server->loginDatabase.$support_tickets";
 	$tableName2		= "$server->loginDatabase.$support_reply";
 	$tableName3		= "$server->loginDatabase.$support_dep";
+	$group_col		= getGroupCol($server);
 
 
 	// fetch all ticket id
@@ -390,6 +408,7 @@ function getUnread($account_id, $server, $group_id) {
 	return (int) $num;
 };
 $unread = 0;
-if ($session->isLoggedIn()) $unread = getUnread($session->account->account_id, $session->loginAthenaGroup, $session->account->group_id);
+$group_col = getGroupCol($server);
+if ($session->isLoggedIn()) $unread = getUnread($session->account->account_id, $session->loginAthenaGroup, $session->account->$group_col);
 
 ?>

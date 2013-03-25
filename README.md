@@ -28,6 +28,7 @@ Features:
 
 Compability:
 - Tested on Xantara's FluxCP for rAthena - https://github.com/m...ntara/fluxcp-rA
+- Tested on FluxCP for eAthena - https://code.google.com/p/fluxcp/
 
 Rules:
 - Do not steal the credit of this work.

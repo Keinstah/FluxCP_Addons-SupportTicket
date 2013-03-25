@@ -28,12 +28,12 @@
 	</tr>
 	<?php foreach ($ticket_res as $row): ?>
 	<tr>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date("F j", strtotime($row->datetime_submitted)) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><a href='<?= getURL($row->id, $this->url('support', 'view')) ?>'><?= "#".$row->id." - ".htmlspecialchars($row->subject) ?></a></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getDepartment($server, (int)$row->department)->name ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getStatus($row->status) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date(Flux::config('DateTimeFormat'), strtotime($row->datetime_updated)) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->group_id, $row->id, $server) ? "background:#fff9ba" : "") ?>'><a href='<?= getURL($row->id, $this->url('support', 'view')) ?>'>View Ticket</a></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date("F j", strtotime($row->datetime_submitted)) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><a href='<?= getURL($row->id, $this->url('support', 'view')) ?>'><?= "#".$row->id." - ".htmlspecialchars($row->subject) ?></a></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getDepartment($server, (int)$row->department)->name ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getStatus($row->status) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date(Flux::config('DateTimeFormat'), strtotime($row->datetime_updated)) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><a href='<?= getURL($row->id, $this->url('support', 'view')) ?>'>View Ticket</a></td>
 	</tr>
 	<?php endforeach ?>
 </table>

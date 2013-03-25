@@ -11,6 +11,7 @@ $tableName		= "$server->loginDatabase.$support_tickets";
 $tableName2		= "$server->loginDatabase.$support_reply";
 $tableName3		= "$server->loginDatabase.$support_dep";
 $errorMessage	= NULL;
+$group_col 		= getGroupCol($server);
 
 $groups = array("LOWGM" => AccountLevel::LOWGM, "HIGHGM" => AccountLevel::HIGHGM, "ADMIN" => AccountLevel::ADMIN);
 

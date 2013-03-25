@@ -28,35 +28,35 @@
 						</button>
 					</td>
 				<?php endif ?>
-				<?php if ($session->account->group_id >= Flux::config('TicketCloseGroup') && $ticket_res->status != 0): ?>
+				<?php if ($session->account->$group_col >= Flux::config('TicketCloseGroup') && $ticket_res->status != 0): ?>
 					<td><button title='Close' name='take_action' value='close' style='background:none;border:none;cursor:pointer'>
 							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/close.png' ?>' alt='Close' border='' />
 							Close
 						</button>
 					</td>
 				<?php endif ?>
-				<?php if ($session->account->group_id >= Flux::config('TicketOpenGroup') && $ticket_res->status != 1): ?>
+				<?php if ($session->account->$group_col >= Flux::config('TicketOpenGroup') && $ticket_res->status != 1): ?>
 					<td><button title='Open' name='take_action' value='open' style='background:none;border:none;cursor:pointer'>
 							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/open.png' ?>' alt='Open' border='' />
 							Open
 						</button>
 					</td>
 				<?php endif ?>
-				<?php if ($session->account->group_id >= Flux::config('TicketResolveGroup') && $ticket_res->status != 2): ?>
+				<?php if ($session->account->$group_col >= Flux::config('TicketResolveGroup') && $ticket_res->status != 2): ?>
 					<td><button title='Resolve' name='take_action' value='resolve' style='background:none;border:none;cursor:pointer'>
 							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/resolve.png' ?>' alt='Resolve' border='' />
 							Resolve
 						</button>
 					</td>
 				<?php endif ?>
-				<?php if ($session->account->group_id >= Flux::config('TicketDelGroup')): ?>
+				<?php if ($session->account->$group_col >= Flux::config('TicketDelGroup')): ?>
 					<td><button title='Delete' name='take_action' value='delete' onclick="if(!confirm('Are you sure about this?')) return false;" style='background:none;border:none;cursor:pointer'>
 							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/delete.png' ?>' alt='Delete' border='' />
 							Delete
 						</button>
 					</td>
 				<?php endif ?>
-				<?php if ($session->account->group_id >= Flux::config('TicketEditGroup')): ?>
+				<?php if ($session->account->$group_col >= Flux::config('TicketEditGroup')): ?>
 					<td><button type='button' title='Edit' onclick="parent.location='<?= getURL($ticket_res->id, $this->url('support', 'edit')) ?>'" style='background:none;border:none;cursor:pointer'>
 							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/edit.png' ?>' alt='Edit' border='' />
 							Edit
@@ -84,7 +84,7 @@
 			<td style='text-align:center;'><?= getPriority($ticket_res->priority) ?></td>
 			<td style='text-align:center;'><?= getStatus($ticket_res->status) ?></td>
 			<td style='text-align:center;'><?= getDepartment($server, $ticket_res->department)->name ?></td>
-			<?php if ($session->account->group_id >= Flux::config('TicketShowChar') && $ticket_res->char_id): ?>
+			<?php if ($session->account->$group_col >= Flux::config('TicketShowChar') && $ticket_res->char_id): ?>
 				<td style='text-align:center;'><a title='View Character' href='<?= getURL($ticket_res->char_id, $this->url('character', 'view')) ?>'><?php echo (getCharAffected($ticket_res->char_id, $server) ? getCharAffected($ticket_res->char_id, $server) : "<span style='color:#999'>None</span>") ?></a></td>
 			<?php else: ?>
 				<td style='text-align:center;'><?php echo (getCharAffected($ticket_res->char_id, $server) ? getCharAffected($ticket_res->char_id, $server) : "<span style='color:#999'>None</span>") ?></td>
@@ -97,11 +97,11 @@
 			<th>
 				<span style='float:left;font-size:18px;color:#4083c6;max-width:90%'><?= htmlspecialchars($ticket_res->subject) ?></span>
 					<span style='float:right;'>
-						<?php if ($session->account->group_id >= Flux::config('TicketShowUsername')): ?>
+						<?php if ($session->account->$group_col >= Flux::config('TicketShowUsername')): ?>
 						<a href='<?= getURL($ticket_res->account_id, $this->url('account', 'view')) ?>'>
 						<?php endif ?>
 							<?= getNickname($ticket_res->account_id, $server) ?>
-						<?php if ($session->account->group_id >= Flux::config('TicketShowUsername')): ?>
+						<?php if ($session->account->$group_col >= Flux::config('TicketShowUsername')): ?>
 						</a>
 						<?php endif ?>
 					</span>
@@ -123,7 +123,7 @@
 		<input type='hidden' name='email' value='<?= $ticket_res->email ?>' />
 		<textarea style='width:500px' id='reply' name='reply'></textarea><br />
 		<input type='submit' value='Submit Reply' />
-		<?php if ($session->account->group_id >= AccountLevel::LOWGM): ?>
+		<?php if ($session->account->$group_col >= AccountLevel::LOWGM): ?>
 			<input type='radio' id='nothing' name='status' value='3' checked='checked' /> <label for='nothing'>Do nothing</label>
 			<input type='radio' id='close' name='status' value='0' /> <label for='close'>Close</label>
 			<input type='radio' id='resolved' name='status' value='2' /> <label for='resolved'>Resolve</label>
@@ -144,12 +144,12 @@
 				<tr>
 					<th>
 						<span style='display:block;float:left;'>
-						<?php if ($session->account->group_id >= Flux::config('TicketShowUsername')): ?>
+						<?php if ($session->account->$group_col >= Flux::config('TicketShowUsername')): ?>
 						<a href='<?= getURL($ticket_res->account_id, $this->url('account', 'view')) ?>'>
 						<?php endif ?>
 							<?php echo (getGroupID($row->account_id, $server) >= AccountLevel::LOWGM ? "<img src='".Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/staff.png'."' alt='Staff' border='' title='Staff' />" : "")." ".getNickname($row->account_id, $server) ?>
 						
-						<?php if ($session->account->group_id >= Flux::config('TicketShowUsername')): ?>
+						<?php if ($session->account->$group_col >= Flux::config('TicketShowUsername')): ?>
 						</a>
 						<?php endif ?>
 						</span>
@@ -161,7 +161,7 @@
 				<tr class='deleteTrigger'>
 					<td<?php echo (getGroupID($row->account_id, $server) >= AccountLevel::LOWGM ? " style='background:#fff3d8'" : " style='background:#e4ffe8'") ?>>
 						<span style='width:90%;dispaly:block;float:left'><?= $row->reply ?></span>
-						<?php if ($session->account->group_id >= AccountLevel::LOWGM): ?>
+						<?php if ($session->account->$group_col >= AccountLevel::LOWGM): ?>
 							<span style='display:block;float:right;height:25px'><button style='display:none' type='submit' name='delete_reply' value='<?= (int) $row->id ?>' onclick="if(!confirm('Are you sure about this?'))return false;">Delete</button></span>
 						<?php endif ?>
 					</td>

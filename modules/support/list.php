@@ -16,6 +16,7 @@ $support_dep 	= Flux::config('FluxTables.support_dep');
 $tableName		= "$server->loginDatabase.$support_tickets";
 $tableName2		= "$server->loginDatabase.$support_reply";
 $tableName3		= "$server->loginDatabase.$support_dep";
+$group_col 		= getGroupCol($server);
 
 if (isset($_POST['take_action']))
 {
@@ -149,7 +150,7 @@ if (isset($_POST['take_action']))
 
 					$res = $sth->fetch();
 
-					if ($session->account->group_id < Flux::config('TicketOpenGroup'))
+					if ($session->account->$group_col < Flux::config('TicketOpenGroup'))
 					{
 						$errorMessage = Flux::message('InsufficientPermission');
 						break;
@@ -196,7 +197,7 @@ if (isset($_POST['take_action']))
 
 					$res = $sth->fetch();
 
-					if ($session->account->group_id < Flux::config('TicketCloseGroup'))
+					if ($session->account->$group_col < Flux::config('TicketCloseGroup'))
 					{
 						$errorMessage = Flux::message('InsufficientPermission');
 						break;
@@ -238,7 +239,7 @@ if (isset($_POST['take_action']))
 
 				case "delete":
 					// deleting the support ticket
-					if ($session->account->group_id < Flux::config('TicketDelGroup'))
+					if ($session->account->$group_col < Flux::config('TicketDelGroup'))
 					{
 						$errorMessage = Flux::message('InsufficientPermission');
 						break;
@@ -289,7 +290,7 @@ if (isset($_POST['take_action']))
 
 					$res = $sth->fetch();
 
-					if ($session->account->group_id < Flux::config('TicketResolveGroup'))
+					if ($session->account->$group_col < Flux::config('TicketResolveGroup'))
 					{
 						$errorMessage = Flux::message('InsufficientPermission');
 						break;
@@ -338,7 +339,7 @@ if (isset($_POST['take_action']))
 
 $sql = "SELECT id FROM $tableName3 WHERE group_id > ?";
 $sth = $server->connection->getStatement($sql);
-$sth->execute(array($session->account->group_id));
+$sth->execute(array($session->account->$group_col));
 $group_res = $sth->fetchAll();
 
 $sqlpartial = "";

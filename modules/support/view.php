@@ -15,6 +15,7 @@ $support_reply 	= Flux::config('FluxTables.support_reply');
 $tableName		= "$server->loginDatabase.$support_tickets";
 $tableName2		= "$server->loginDatabase.$support_reply";
 $ticket_id		= (int) $params->get('id');
+$group_col 		= getGroupCol($server);
 $errorMessage	= NULL;
 
 if (isset($_POST['reply']))
@@ -98,7 +99,7 @@ if (isset($_POST['reply']))
 					}
 
 					// fetch all the gm accounts details
-					$sql = "SELECT account_id, email FROM $server->loginDatabase.login WHERE group_id >= ?";
+					$sql = "SELECT account_id, email FROM $server->loginDatabase.login WHERE $group_col >= ?";
 					$sth = $server->connection->getStatement($sql);
 					$sth->execute(array(AccountLevel::LOWGM));
 					$account_res = $sth->fetchAll();
@@ -139,7 +140,7 @@ if (isset($_POST['delete_reply']))
 {
 	$reply_id = (int) $params->get('delete_reply');
 
-	if ($session->account->group_id < AccountLevel::LOWGM)
+	if ($session->account->$group_col < AccountLevel::LOWGM)
 	{
 		$errorMessage = Flux::message('InsufficientPermission');
 	} else {
@@ -277,7 +278,7 @@ if (isset($_POST['take_action']))
 
 			$res = $sth->fetch();
 
-			if ($session->account->group_id < Flux::config('TicketOpenGroup'))
+			if ($session->account->$group_col < Flux::config('TicketOpenGroup'))
 			{
 				$errorMessage = Flux::message('InsufficientPermission');
 			} else
@@ -321,7 +322,7 @@ if (isset($_POST['take_action']))
 
 			$res = $sth->fetch();
 
-			if ($session->account->group_id < Flux::config('TicketCloseGroup'))
+			if ($session->account->$group_col < Flux::config('TicketCloseGroup'))
 			{
 				$errorMessage = Flux::message('InsufficientPermission');
 			} else
@@ -361,7 +362,7 @@ if (isset($_POST['take_action']))
 
 		case "delete":
 			// deleting the support ticket
-			if ($session->account->group_id < Flux::config('TicketDelGroup'))
+			if ($session->account->$group_col < Flux::config('TicketDelGroup'))
 			{
 				$errorMessage = Flux::message('InsufficientPermission');
 			} else {
@@ -411,7 +412,7 @@ if (isset($_POST['take_action']))
 
 			$res = $sth->fetch();
 
-			if ($session->account->group_id < Flux::config('TicketResolveGroup'))
+			if ($session->account->$group_col < Flux::config('TicketResolveGroup'))
 			{
 				$errorMessage = Flux::message('InsufficientPermission');
 			} else
@@ -468,7 +469,7 @@ if (!is_null($ticket_res))
 {
 	if ($ticket_res->account_id != $session->account->account_id)
 	{
-		if ($session->account->group_id < getDepartment($server, $ticket_res->department)->group_id)
+		if ($session->account->$group_col < getDepartment($server, $ticket_res->department)->group_id)
 		{
 			$ticket_res = NULL;
 		} else {
