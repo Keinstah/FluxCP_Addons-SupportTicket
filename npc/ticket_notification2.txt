@@ -2,6 +2,7 @@
 	
 	OnPCLoginEvent:
 		set .@timer, 1; // 1 minute
+		set .@forceNotify, 0; // will show 0 unread support tickets.
 		
 		while(1) {
 			set .@unreadmsg$, "You have %d unread support tickets.";
@@ -56,13 +57,16 @@
 					}
 					
 					if (@group_id <= getgmlevel() && .@isRead == 0) {
+						if (.@forceNotify && .@count == 0) dispbottom(sprintf(.@unreadmsg$, 0));
+						
 						dispbottom(sprintf(.@unreadmsg$, .@count));
 					} else {
-						dispbottom(sprintf(.@unreadmsg$, 0));
+						
+						if (.@forceNotify) dispbottom(sprintf(.@unreadmsg$, 0));
 					}
 				}
 			} else {
-				dispbottom(sprintf(.@unreadmsg$, 0));
+				if (.@forceNotify) dispbottom(sprintf(.@unreadmsg$, 0));
 			}
 			sleep2 .@timer * 60000;
 		}
