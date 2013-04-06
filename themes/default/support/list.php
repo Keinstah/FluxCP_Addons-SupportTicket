@@ -11,7 +11,7 @@
 		<input type='hidden' name='action' value='search' />
 		<table class='generic-form-table'>
 			<tr>
-				<td><input type='text' name='q' style='width:250px;' placeholder='Ticket ID#, Subject or Account ID...' value='<?= htmlspecialchars($params->get('q')) ?>' /></td>
+				<td><input type='text' name='q' style='width:250px;' placeholder='Ticket ID#, Subject or Account ID...' value='<?php echo htmlspecialchars($params->get('q')) ?>' /></td>
 				<td><input type='submit' value='Search' /></td>
 			</tr>
 		</table>
@@ -20,39 +20,39 @@
 		<table>
 			<tr>
 				<td><button title='Unsubscribe' name='take_action' value='unsubscribe' style='background:none;border:none;cursor:pointer'>
-						<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/unsubscribe.png' ?>' alt='Unsubscribe' border='' />
+						<img src='<?php echo Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/unsubscribe.png' ?>' alt='Unsubscribe' border='' />
 						Unsubscribe
 					</button>
 				</td>
 				<td><button title='Subscribe' name='take_action' value='subscribe' style='background:none;border:none;cursor:pointer'>
-						<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/subscribe.png' ?>' alt='Subscribe' border='' />
+						<img src='<?php echo Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/subscribe.png' ?>' alt='Subscribe' border='' />
 						Subscribe
 					</button>
 				</td>
 				<?php if ($session->account->$group_col >= Flux::config('TicketCloseGroup')): ?>
 					<td><button title='Close' name='take_action' value='close' style='background:none;border:none;cursor:pointer'>
-							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/close.png' ?>' alt='Close' border='' />
+							<img src='<?php echo Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/close.png' ?>' alt='Close' border='' />
 							Close
 						</button>
 					</td>
 				<?php endif ?>
 				<?php if ($session->account->$group_col  >= Flux::config('TicketOpenGroup')): ?>
 					<td><button title='Open' name='take_action' value='open' style='background:none;border:none;cursor:pointer'>
-							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/open.png' ?>' alt='Open' border='' />
+							<img src='<?php echo Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/open.png' ?>' alt='Open' border='' />
 							Open
 						</button>
 					</td>
 				<?php endif ?>
 				<?php if ($session->account->$group_col  >= Flux::config('TicketResolveGroup')): ?>
 					<td><button title='Resolve' name='take_action' value='resolve' style='background:none;border:none;cursor:pointer'>
-							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/resolve.png' ?>' alt='Resolve' border='' />
+							<img src='<?php echo Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/resolve.png' ?>' alt='Resolve' border='' />
 							Resolve
 						</button>
 					</td>
 				<?php endif ?>
 				<?php if ($session->account->$group_col  >= Flux::config('TicketDelGroup')): ?>
 					<td><button title='Delete' name='take_action' value='delete' onclick="if(!confirm('Are you sure about this?')) return false;" style='background:none;border:none;cursor:pointer'>
-							<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/delete.png' ?>' alt='Delete' border='' />
+							<img src='<?php echo Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/delete.png' ?>' alt='Delete' border='' />
 							Delete
 						</button>
 					</td>
@@ -63,27 +63,27 @@
 <table class="horizontal-table">
 	<tr>
 		<th><input type='checkbox' onclick="selectAll(this, 'id')" /></th>
-		<th><?= $paginator->sortableColumn('datetime_submitted', 'Date') ?></th>
-		<th><?= $paginator->sortableColumn('subject', 'Subject') ?></th>
-		<th><?= $paginator->sortableColumn('department', 'Department') ?></th>
-		<th><?= $paginator->sortableColumn('status', 'Status') ?></th>
-		<th><?= $paginator->sortableColumn('priority', 'Priority') ?></th>
-		<th><?= $paginator->sortableColumn('datetime_updated', 'Last Updated') ?></th>
+		<th><?php echo $paginator->sortableColumn('datetime_submitted', 'Date') ?></th>
+		<th><?php echo $paginator->sortableColumn('subject', 'Subject') ?></th>
+		<th><?php echo $paginator->sortableColumn('department', 'Department') ?></th>
+		<th><?php echo $paginator->sortableColumn('status', 'Status') ?></th>
+		<th><?php echo $paginator->sortableColumn('priority', 'Priority') ?></th>
+		<th><?php echo $paginator->sortableColumn('datetime_updated', 'Last Updated') ?></th>
 		<th></th>
 	</tr>
 	<?php foreach ($ticket_res as $row): ?>
 	<tr>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><input type='checkbox' class='id' name='ticket_id[]' value='<?= (int) $row->id ?>' /></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date("F j", strtotime($row->datetime_submitted)) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><a href='<?= getURL($row->id, $this->url('support', 'view')) ?>'><?= "#".$row->id." - ".htmlspecialchars($row->subject) ?></a></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getDepartment($server, (int)$row->department)->name ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getStatus($row->status) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= getPriority($row->priority) ?></td>
-		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?= date(Flux::config('DateTimeFormat'), strtotime($row->datetime_updated)) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><input type='checkbox' class='id' name='ticket_id[]' value='<?php echo (int) $row->id ?>' /></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><?php echo date("F j", strtotime($row->datetime_submitted)) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><a href='<?php echo getURL($row->id, $this->url('support', 'view')) ?>'><?php echo "#".$row->id." - ".htmlspecialchars($row->subject) ?></a></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><?php echo getDepartment($server, (int)$row->department)->name ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col , $row->id, $server) ? "background:#fff9ba" : "") ?>'><?php echo getStatus($row->status) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?php echo getPriority($row->priority) ?></td>
+		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'><?php echo date(Flux::config('DateTimeFormat'), strtotime($row->datetime_updated)) ?></td>
 		<td style='text-align:center;<?php echo (!isRead($session->account->account_id, $session->account->$group_col, $row->id, $server) ? "background:#fff9ba" : "") ?>'>
-			<a href='<?= getURL($row->id, $this->url('support', 'view')) ?>'>View</a>
+			<a href='<?php echo getURL($row->id, $this->url('support', 'view')) ?>'>View</a>
 			<?php if ($session->account->$group_col >= Flux::config('TicketEditGroup')): ?>
-				| <a href='<?= getURL($row->id, $this->url('support', 'edit')) ?>'>Edit</a>
+				| <a href='<?php echo getURL($row->id, $this->url('support', 'edit')) ?>'>Edit</a>
 			<?php endif ?>
 		</td>
 	</tr>
@@ -99,5 +99,5 @@
 	}
 </script>
 <?php else: ?>
-<p class='message'><?= Flux::message('NoTicket') ?></p>
+<p class='message'><?php echo Flux::message('NoTicket') ?></p>
 <?php endif ?>

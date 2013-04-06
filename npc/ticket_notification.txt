@@ -13,7 +13,7 @@
 		} else {
 			set .@sql$, .@sql$ + "account_id = " + getcharid(3) + " AND unread = 1";
 		}
-		set .@count, query_sql(.@sql$, @id, @department, @ticket_read);
+		set .@count, query_sql(.@sql$, @id, @department, @ticket_read$);
 		if (.@count) {
 			if (getgmlevel() == 0) {
 				dispbottom(sprintf(.@unreadmsg$, .@count));
@@ -28,11 +28,14 @@
 					
 					query_sql("SELECT group_id FROM cp_support_dep WHERE id = " + @department[.@i], @group_id);
 					
-					explode(.@tickets_read, @ticket_read[.@i], ",");
-					
-					for (set .@j, 0; .@j < getarraysize(.@tickets_read); .@j++) {
-						if (.@tickets_read[.@j] == getcharid(3)) {
-							set .@isRead, 1;
+					if (@ticket_read$ != "") {
+						explode(.@tickets_read$, @ticket_read$[.@i], ",");
+						
+						for (set .@j, 0; .@j < getarraysize(.@tickets_read$); .@j++) {
+							if (atoi(.@tickets_read$[.@j]) == getcharid(3)) {
+								set .@isRead, 1;
+								break;
+							}
 						}
 					}
 					
@@ -44,8 +47,20 @@
 				end;
 			} else {
 				query_sql("SELECT group_id FROM cp_support_dep WHERE id = " + @department, @group_id);
+				set .@isRead, 0;
 				
-				if (@group_id <= getgmlevel()) {
+				if (@ticket_read$ != "") {
+					explode(.@tickets_read$, @ticket_read$, ",");
+						
+					for (set .@j, 0; .@j < getarraysize(.@tickets_read$); .@j++) {
+						if (atoi(.@tickets_read$[.@j]) == getcharid(3)) {
+							set .@isRead, 1;
+							break;
+						}
+					}
+				}
+				
+				if (@group_id <= getgmlevel() && .@isRead == 0) {
 					dispbottom(sprintf(.@unreadmsg$, .@count));
 					end;
 				} else {
