@@ -57,9 +57,12 @@
 					}
 					
 					if (@group_id <= getgmlevel() && .@isRead == 0) {
-						if (.@forceNotify && .@count == 0) dispbottom(sprintf(.@unreadmsg$, 0));
-						
-						dispbottom(sprintf(.@unreadmsg$, .@count));
+						if (.@forceNotify && .@count == 0) {
+							dispbottom(sprintf(.@unreadmsg$, 0));
+						} else 
+						if (.@count > 0) {
+							dispbottom(sprintf(.@unreadmsg$, .@count));
+						}
 					} else {
 						
 						if (.@forceNotify) dispbottom(sprintf(.@unreadmsg$, 0));
