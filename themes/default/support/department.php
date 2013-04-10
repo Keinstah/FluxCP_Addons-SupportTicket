@@ -14,9 +14,17 @@
 			<td>
 				<select name='take_action'>
 					<option value='new'>~ Create New ~</option>
-					<?php foreach ($all_dep_res as $row): ?>
-					<option value='<?php echo (int) $row->id ?>'><?php echo htmlspecialchars($row->name) ?></option>
-					<?php endforeach ?>
+					<?php if (count($all_dep_res)): ?>
+
+						<?php foreach ($all_dep_res as $row): ?>
+						<option value='<?= (int) $row->id ?>'><?= htmlspecialchars($row->name) ?></option>
+						<?php endforeach ?>
+
+						<?php foreach ($all_dep_res as $row): ?>
+						<option value='<?php echo (int) $row->id ?>'><?php echo htmlspecialchars($row->name) ?></option>
+						
+						<?php endforeach ?>
+					<?php endif ?>
 				</select>
 			</td>
 			<td><input type='text' id='name' name='name' placeholder='Name here...' /></td>
