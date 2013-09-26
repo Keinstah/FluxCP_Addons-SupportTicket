@@ -14,9 +14,17 @@
 			<td>
 				<select name='take_action'>
 					<option value='new'>~ Create New ~</option>
-					<?php foreach ($all_dep_res as $row): ?>
-					<option value='<?= (int) $row->id ?>'><?= htmlspecialchars($row->name) ?></option>
-					<?php endforeach ?>
+					<?php if (count($all_dep_res)): ?>
+
+						<?php foreach ($all_dep_res as $row): ?>
+						<option value='<?= (int) $row->id ?>'><?= htmlspecialchars($row->name) ?></option>
+						<?php endforeach ?>
+
+						<?php foreach ($all_dep_res as $row): ?>
+						<option value='<?php echo (int) $row->id ?>'><?php echo htmlspecialchars($row->name) ?></option>
+						
+						<?php endforeach ?>
+					<?php endif ?>
 				</select>
 			</td>
 			<td><input type='text' id='name' name='name' placeholder='Name here...' /></td>
@@ -26,7 +34,7 @@
 			<td>
 				<select id='group_id' name='group_id'>
 					<?php foreach ($groups as $name => $level): ?>
-					<option value='<?= (int) $level ?>'><?= htmlspecialchars($name) ?></option>
+					<option value='<?php echo (int) $level ?>'><?php echo htmlspecialchars($name) ?></option>
 					<?php endforeach ?>
 				</select>
 			</td>
@@ -44,7 +52,7 @@
 <form action="<?php echo $this->urlWithQs ?>" method="post">
 	<table class='generic-form-table'>
 		<button title='Delete' name='take_action' value='delete' onclick="if(!confirm('Are you sure about this?')) return false;" style='background:none;border:none;cursor:pointer'>
-		<img src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/delete.png' ?>' alt='Delete' border='' /> Delete
+		<img src='<?php echo Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/delete.png' ?>' alt='Delete' border='' /> Delete
 		</button>
 	</table>
 
@@ -60,19 +68,19 @@
 		</tr>
 		<?php foreach ($dep_res as $row): ?>
 		<tr>
-			<td style='text-align:center'><input type='checkbox' name='dep_id[]' class='dep_id' value='<?= (int) $row->id ?>' /></td>
-			<td style='text-align:center'><?= (int) $row->id ?></td>
-			<td style='text-align:center'><?= htmlspecialchars($row->name) ?></td>
-			<td style='text-align:center'><?= getGroupName($row->group_id) ?></td>
-			<td style='text-align:center'><?= date("F j", strtotime($row->datetime_submitted)) ?></td>
-			<td style='text-align:center'><?= date(Flux::config('DateTimeFormat'), strtotime($row->datetime_updated)) ?></td>
+			<td style='text-align:center'><input type='checkbox' name='dep_id[]' class='dep_id' value='<?php echo (int) $row->id ?>' /></td>
+			<td style='text-align:center'><?php echo (int) $row->id ?></td>
+			<td style='text-align:center'><?php echo htmlspecialchars($row->name) ?></td>
+			<td style='text-align:center'><?php echo getGroupName($row->group_id) ?></td>
+			<td style='text-align:center'><?php echo date("F j", strtotime($row->datetime_submitted)) ?></td>
+			<td style='text-align:center'><?php echo date(Flux::config('DateTimeFormat'), strtotime($row->datetime_updated)) ?></td>
 		</tr>
 		<?php endforeach ?>
 	</table>
 </form>
 <?php echo $paginator->getHTML() ?>
 <?php else: ?>
-<p><?= htmlspecialchars(Flux::message('NoDepartment')) ?></p>
+<p><?php echo htmlspecialchars(Flux::message('NoDepartment')) ?></p>
 <?php endif ?>
 
 <script type='text/javascript'>

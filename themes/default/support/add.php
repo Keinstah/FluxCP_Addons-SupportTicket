@@ -9,14 +9,14 @@
 	<p class="message"><?php echo Flux::message('NoDepartmentAvailable') ?></p>
 <?php elseif (is_null($unavailable)): ?>
 <form action="<?php echo $this->urlWithQs ?>" method="post" class="generic-form">
-	<input type='hidden' name='account_id' value='<?= htmlspecialchars($session->account->account_id) ?>' />
-	<input type='hidden' name='email' value='<?= htmlspecialchars($session->account->email) ?>' />
+	<input type='hidden' name='account_id' value='<?php echo htmlspecialchars($session->account->account_id) ?>' />
+	<input type='hidden' name='email' value='<?php echo htmlspecialchars($session->account->email) ?>' />
 	<table class="horizontal-table">
 		<tr>
 			<th colspan='3' style='text-align:left!important;'><label for='subject'>Subject</label></th>
 		</tr>
 		<tr>
-			<td colspan='3' style='text-align:left!important;'><input type='text' id='subject' name='subject' style='width:500px' value='<?= htmlspecialchars($params->get('subject')) ?>' /></td>
+			<td colspan='3' style='text-align:left!important;'><input type='text' id='subject' name='subject' style='width:500px' value='<?php echo htmlspecialchars($params->get('subject')) ?>' /></td>
 		</tr>
 		<tr>
 			<th style='text-align:left!important;'><label for='department'>Department</label></th>
@@ -30,9 +30,9 @@
 				<select name='department' id='department'>
 					<?php foreach (getDepartment($server) as $row): ?>
 						<?php if ($params->get('department') == $row->id): ?>
-							<option value='<?= $row->id ?>' selected='selected'><?= htmlspecialchars($row->name) ?></option>
+							<option value='<?php echo $row->id ?>' selected='selected'><?php echo htmlspecialchars($row->name) ?></option>
 						<?php else: ?>
-							<option value='<?= $row->id ?>'><?= htmlspecialchars($row->name) ?></option>
+							<option value='<?php echo $row->id ?>'><?php echo htmlspecialchars($row->name) ?></option>
 						<?php endif ?>
 					<?php endforeach ?>
 				</select>
@@ -50,9 +50,9 @@
 					<option value=''>None</option>
 				<?php foreach ($char_res as $row): ?>
 					<?php if ((int)$params->get('char') === $row->char_id): ?>
-						<option value='<?= (int) $row->char_id ?>' selected='selected'><?= htmlspecialchars($row->name) ?></option>
+						<option value='<?php echo (int) $row->char_id ?>' selected='selected'><?php echo htmlspecialchars($row->name) ?></option>
 					<?php else: ?>
-						<option value='<?= (int) $row->char_id ?>'><?= htmlspecialchars($row->name) ?></option>
+						<option value='<?php echo (int) $row->char_id ?>'><?php echo htmlspecialchars($row->name) ?></option>
 					<?php endif ?>
 				<?php endforeach ?>
 				</select>
@@ -64,26 +64,26 @@
 		</tr>
 		<tr>
 			<td colspan='3'>
-				<textarea id='message' name='message' style='width:500px'><?= htmlspecialchars($params->get('message')) ?></textarea>
+				<textarea id='message' name='message' style='width:500px'><?php echo htmlspecialchars($params->get('message')) ?></textarea>
 			</td>
 		</tr>
 		<?php if (Flux::config('EnableSubscribing')): ?>
 		<tr>
 			<td colspan='3'><input style='float:left' type='checkbox' name='subscribe' id='subscribe' value='1'<?php echo ((int)$params->get('subscribe') === 1 ? " checked='checked'" : "") ?> />
 				<label style='float:left;padding-top:2px;' for='subscribe'>Subscribe</label>
-				 <span style='float:left;display:block;font-size:11px;color:#999;padding-top:2px;margin-left:3px'><?= htmlspecialchars(Flux::message('EmailNotice')) ?></span></td>
+				 <span style='float:left;display:block;font-size:11px;color:#999;padding-top:2px;margin-left:3px'><?php echo htmlspecialchars(Flux::message('EmailNotice')) ?></span></td>
 		</tr>
 		<?php endif ?>
 		<tr>
-			<td colspan='3'><input style='float:right' type='submit' value='<?= htmlspecialchars(Flux::message('SubmitTicket')) ?>'></td>
+			<td colspan='3'><input style='float:right' type='submit' value='<?php echo htmlspecialchars(Flux::message('SubmitTicket')) ?>'></td>
 		</tr>
 	</table>
 </form>
 <?php else: ?>
-	<p class='red'><?= htmlspecialchars(sprintf(Flux::message('TicketAlreadySubmitted'), getTimeLeft(strtotime("+".Flux::config('TicketDelay').' hours', strtotime($timestamp))))) ?></p>
+	<p class='red'><?php echo htmlspecialchars(sprintf(Flux::message('TicketAlreadySubmitted'), getTimeLeft(strtotime("+".Flux::config('TicketDelay').' hours', strtotime($timestamp))))) ?></p>
 <?php endif ?>
 
-<script src='<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/js/nicEdit.js' ?>' type='text/javascript'>
+<script src='<?php echo Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/js/nicEdit.js' ?>' type='text/javascript'>
 </script>
 <script type='text/javascript'>
 
@@ -106,7 +106,7 @@
 			'outdent' : {name : __('Remove Indent'), command : 'outdent', noActive : true},
 			'hr' : {name : __('Horizontal Rule'), command : 'insertHorizontalRule', noActive : true}
 		},
-		iconsPath : '<?= Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/nicEditorIcons.gif' ?>',
+		iconsPath : '<?php echo Flux::config('BaseURI').FLUX_ADDON_DIR.'/support/themes/'.Flux::config('ThemeName').'/img/nicEditorIcons.gif' ?>',
 		buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','fontFormat','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],
 		iconList : {"bgcolor":1,"forecolor":2,"bold":3,"center":4,"hr":5,"indent":6,"italic":7,"justify":8,"left":9,"ol":10,"outdent":11,"removeformat":12,"right":13,"save":24,"strikethrough":15,"subscript":16,"superscript":17,"ul":18,"underline":19,"image":20,"link":21,"unlink":22,"close":23,"arrow":25,"upload":26}
 		
