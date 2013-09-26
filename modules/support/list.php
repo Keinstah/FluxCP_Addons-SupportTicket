@@ -6,7 +6,7 @@ require_once 'Flux/Mailer.php';
 Flux::config('MailerFromName', Flux::config('SupportFromName'));
 
 // instantiate mailer
-$mail = new Flux_Mailer();
+$mail = @new Flux_Mailer();
 
 $title = Flux::message('SupportListTitle');
 
@@ -24,7 +24,7 @@ if (isset($_POST['take_action']))
 	$action 	= $params->get('take_action');
 	$account_id = $session->account->account_id;
 
-	if (count($ticket_ids) === 0)
+	if ( ! count($ticket_ids))
 	{
 		$errorMessage = Flux::message('NoSelectedTicket');
 	} else {
@@ -47,7 +47,7 @@ if (isset($_POST['take_action']))
 						$res = $sth->fetch();
 
 						// not owner of the ticket
-						if ($sth->rowCount() === 1)
+						if ($sth->rowCount())
 						{
 							if ($res->account_id != $account_id)
 							{
@@ -57,7 +57,7 @@ if (isset($_POST['take_action']))
 								$sth = $server->connection->getStatement($sql);
 								$sth->execute(array($unsubscribe, $ticket_id));
 
-								if ($sth->rowCount() === 0)
+								if ( ! $sth->rowCount())
 								{
 									$successMessage = Flux::message('UnsubFailed');
 									break;
@@ -69,7 +69,7 @@ if (isset($_POST['take_action']))
 								$sth = $server->connection->getStatement($sql);
 								$sth->execute(array($ticket_id));
 
-								if ($sth->rowCount() === 0)
+								if ( ! $sth->rowCount())
 								{
 									$successMessage = Flux::message('UnsubFailed');
 									break;
@@ -97,24 +97,22 @@ if (isset($_POST['take_action']))
 						$res = $sth->fetch();
 
 						// not owner of the ticket
-						if ($sth->rowCount() === 1)
+						if ($sth->rowCount())
 						{
 							if ($res->account_id != $account_id)
 							{
 								$unsubscribe = $res->unsubscribe;
 
 								if (preg_match("/,".$account_id."/", $unsubscribe))
-								{
 									$unsubscribe = str_replace(",".$account_id, "", $unsubscribe);
-								} else {
+								else
 									$unsubscribe = str_replace($account_id, "", $unsubscribe);
-								}
 
 								$sql = "UPDATE $tableName SET unsubscribe = ? WHERE id = ?";
 								$sth = $server->connection->getStatement($sql);
 								$sth->execute(array($unsubscribe, $ticket_id));
 
-								if ($sth->rowCount() === 0)
+								if ( ! $sth->rowCount())
 								{
 									$errorMessage = Flux::message('SubFailed');
 									break;
@@ -126,7 +124,7 @@ if (isset($_POST['take_action']))
 								$sth = $server->connection->getStatement($sql);
 								$sth->execute(array($ticket_id));
 
-								if ($sth->rowCount() === 0)
+								if ( ! $sth->rowCount())
 								{
 									$errorMessage = Flux::message('SubFailed');
 									break;
@@ -156,7 +154,7 @@ if (isset($_POST['take_action']))
 						break;
 					} else
 
-					if ($sth->rowCount() === 0)
+					if ( ! $sth->rowCount())
 					{
 						continue;
 					} else {
@@ -179,7 +177,7 @@ if (isset($_POST['take_action']))
 						$sth = $server->connection->getStatement($sql);
 						$sth->execute(array($ticket_id));
 
-						if ($sth->rowCount() === 0)
+						if ( ! $sth->rowCount())
 						{
 							$errorMessage = Flux::message('TicketOpenFailed');
 							break;
@@ -203,7 +201,7 @@ if (isset($_POST['take_action']))
 						break;
 					} else
 
-					if ($sth->rowCount() === 0)
+					if ( ! $sth->rowCount())
 					{
 						continue;
 					} else {
@@ -227,7 +225,7 @@ if (isset($_POST['take_action']))
 						$sth = $server->connection->getStatement($sql);
 						$sth->execute(array($ticket_id));
 
-						if ($sth->rowCount() === 0)
+						if ( 1 $sth->rowCount())
 						{
 							$errorMessage = Flux::message('TicketCloseFailed');
 							break;
@@ -268,7 +266,7 @@ if (isset($_POST['take_action']))
 						$sth = $server->connection->getStatement($sql);
 						$sth->execute(array($ticket_id));
 
-						if ($sth->rowCount() === 0)
+						if ( ! $sth->rowCount())
 						{
 							$errorMessage = Flux::message('TicketDeleteFailed');
 							break;
@@ -296,7 +294,7 @@ if (isset($_POST['take_action']))
 						break;
 					} else
 
-					if ($sth->rowCount() === 0)
+					if ( ! $sth->rowCount())
 					{
 						continue;
 					} else {
@@ -320,7 +318,7 @@ if (isset($_POST['take_action']))
 						$sth = $server->connection->getStatement($sql);
 						$sth->execute(array($ticket_id));
 
-						if ($sth->rowCount() === 0)
+						if ( ! $sth->rowCount())
 						{
 							$errorMessage = Flux::message('TicketResolveFailed');
 							break;
@@ -344,12 +342,13 @@ $group_res = $sth->fetchAll();
 
 $sqlpartial = "";
 $bind = array();
-if ($sth->rowCount() > 0)
+if ($sth->rowCount())
 {
 	$i = 0;
 	foreach ($group_res as $row)
 	{
-		if ($i != 0) $sql .=" AND";
+		if ($i != 0) 
+			$sql .=" AND";
 
 		$sqlpartial .= " department != ?";
 		$bind[] = $row->id;

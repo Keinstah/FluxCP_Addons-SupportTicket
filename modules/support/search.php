@@ -18,7 +18,7 @@ if (isset($_POST['take_action']))
 	$action 	= $params->get('take_action');
 	$account_id = $session->account->account_id;
 
-	if (count($ticket_ids) === 0)
+	if ( ! count($ticket_ids))
 	{
 		$errorMessage = Flux::message('NoSelectedTicket');
 	} else {
@@ -41,7 +41,7 @@ if (isset($_POST['take_action']))
 						$res = $sth->fetch();
 
 						// not owner of the ticket
-						if ($sth->rowCount() === 1)
+						if ($sth->rowCount())
 						{
 							if ($res->account_id != $account_id)
 							{
@@ -51,7 +51,7 @@ if (isset($_POST['take_action']))
 								$sth = $server->connection->getStatement($sql);
 								$sth->execute(array($unsubscribe, $ticket_id));
 
-								if ($sth->rowCount() === 0)
+								if ( ! $sth->rowCount())
 								{
 									$successMessage = Flux::message('UnsubFailed');
 									break;
@@ -63,7 +63,7 @@ if (isset($_POST['take_action']))
 								$sth = $server->connection->getStatement($sql);
 								$sth->execute(array($ticket_id));
 
-								if ($sth->rowCount() === 0)
+								if ( ! $sth->rowCount())
 								{
 									$successMessage = Flux::message('UnsubFailed');
 									break;

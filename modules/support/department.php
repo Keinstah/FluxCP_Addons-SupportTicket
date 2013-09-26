@@ -25,20 +25,15 @@ if (isset($_POST['add']))
 	$sth = $server->connection->getStatement($sql);
 	$sth->execute(array($name));
 
-	if ($sth->rowCount() === 1)
-	{
+	if ($sth->rowCount())
 		$errorMessage = Flux::message('DepNameExists');
-	} else
-
+	else
 	if (strlen($name) < Flux::config('DepNameMinLen'))
-	{
 		$errorMessage = sprintf(Flux::message('DepNameMin'), Flux::config('DepNameMinLen'));
-	} else
-
+	else
 	if (strlen($name) > Flux::config('DepNameMaxLen'))
-	{
 		$errorMessage = sprintf(Flux::message('DepNameMax'), Flux::config('DepNameMaxLen'));
-	} else {
+	else {
 
 		if ($action == 'new')
 		{
@@ -46,12 +41,10 @@ if (isset($_POST['add']))
 			$sth = $server->connection->getStatement($sql);
 			$sth->execute(array($name, $group_id, date(Flux::config('DateTimeFormat')), date(Flux::config('DateTimeFormat'))));
 
-			if ($sth->rowCount() === 0)
-			{
+			if ( ! $sth->rowCount())
 				$errorMessage = Flux::message('DepNameFailed');
-			} else {
+			else
 				$successMessage = Flux::message('DepNameSuccess');
-			}
 		} else {
 
 			$dep_id = (int) $action;
@@ -60,12 +53,10 @@ if (isset($_POST['add']))
 			$sth = $server->connection->getStatement($sql);
 			$sth->execute(array($name, $group_id, date(Flux::config('DateTimeFormat')), $dep_id));
 
-			if ($sth->rowCount() === 0)
-			{
+			if ( ! $sth->rowCount())
 				$errorMessage = Flux::message('DepUpdateFailed');
-			} else {
+			else
 				$successMessage = Flux::message('DepUpdateSuccess');
-			}
 		}
 	}
 }
@@ -77,7 +68,7 @@ if (isset($_POST['take_action']))
 
 	if ($action == 'delete')
 	{
-		if (count($dep_id) === 0)
+		if ( ! count($dep_id))
 		{
 			$errorMessage = Flux::message('NoDepSelected');
 		} else {
@@ -87,7 +78,7 @@ if (isset($_POST['take_action']))
 				$sth = $server->connection->getStatement($sql);
 				$sth->execute(array((int)$id));
 
-				if ($sth->rowCount() === 0)
+				if ( ! $sth->rowCount())
 				{
 					$errorMessage = Flux::message('FailedToDelDep');
 					break;
@@ -115,11 +106,15 @@ $sql  = $paginator->getSQL($sqlfull);
 $sth  = $server->connection->getStatement($sql);
 $sth->execute();
 $dep_res = $sth->fetchAll();
-if ($sth->rowCount() === 0) $dep_res = NULL;
+
+if ( ! $sth->rowCount())
+	$dep_res = NULL;
 
 // fetch all
 $sth  = $server->connection->getStatement($sql);
 $sth->execute();
 $all_dep_res = $sth->fetchAll();
-if ($sth->rowCount() === 0) $all_dep_res = NULL;
+
+if ( ! $sth->rowCount())
+	$all_dep_res = NULL;
 ?>

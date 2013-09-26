@@ -85,7 +85,8 @@ return array(
 	"TicketSearchMin"			=> "Search query must not be less than %d characters.",
 	"NoResultFound"				=> "No results was found.",
 	"TicketMailMessage"			=> "Thank you for contacting our support team. A support ticket has now been opened for your request. You will be notified when a response is made by email. The details of your ticket are shown below",
-
+	"NoDepartmentAvailable"		=> "The Support Ticket is unavailable at the moment.",
+	"NoTicketList"				=> "No ticket have yet been submitted."
 );
 
 ?>

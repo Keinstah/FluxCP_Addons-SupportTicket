@@ -28,65 +28,46 @@ if (isset($_POST['save']))
 	$sth->execute(array($email));
 
 	// email doesn't exists
-	if ($sth->rowCount() === 0)
-	{
+	if ( ! $sth->rowCount())
 		$errorMessage = Flux::message('EmailNotExists');
-	} else
-
+	else
 	// subject doesn't meet the minimum length
 	if (strlen($subject) < Flux::config('SubjectMinLen'))
-	{
 		$errorMessage = sprintf(Flux::message('SubjectMin'), Flux::config('SubjectMinLen'));
-	} else
-
+	else
 	// subject doesn't meet the maximum length
 	if (strlen($subject) > Flux::config('SubjectMaxLen'))
-	{
 		$errorMessage = sprintf(Flux::message('SubjectMax'), Flux::config('SubjectMaxLen'));
-	} else
-
+	else
 	// check for subject characters
 	if (!preg_match(Flux::config('SubjectChar'), $subject))
-	{
 		$errorMessage = Flux::message('SubjectChar');
-	} else
-
+	else
 	// error occured from department
 	if (!getDepartment($server, $department))
-	{
 		$errorMessage = sprintf(Flux::message('SupportError'), 1);
-	} else
-
+	else
 	// error occured from priority
 	if ($priority > 2)
-	{
 		$errorMessage = sprintf(Flux::message('SupportError'), 2);
-	} else {
-
+	else {
 		// check if character exists
-		if ($char_id !== 0)
+		if ($char_id)
 		{
 			$sql = "SELECT char_id FROM $server->loginDatabase.char WHERE char_id = ?";
 			$sth = $server->connection->getStatement($sql);
 			$sth->execute(array($char_id));
 
-			if ($sth->rowCount() === 0)
-			{
+			if ( ! $sth->rowCount())
 				$errorMessage = Flux::message('CharNotExists');
-			}
 		} else
-
 		// message doesn't meet minimum length
 		if (strlen($message) < Flux::config('MessageMinLen'))
-		{
 			$errorMessage = sprintf(Flux::message('MessageMin'), Flux::config('MessageMinLen'));
-		} else
-
+		else
 		// message doesn't meet maximum length
 		if (strlen($message) > Flux::config('MessageMaxLen'))
-		{
 			$errorMessage = sprintf(Flux::message('MessageMax'), Flux::config('MessageMaxLen'));
-		}
 	}
 
 	if (is_null($errorMessage))
@@ -98,12 +79,10 @@ if (isset($_POST['save']))
 		$bind = array($email, $subject, $department, $priority, $char_id, $status, $message, $subscribe, date(Flux::config('DateTimeFormat')), $ticket_id);
 		$sth->execute($bind);
 
-		if ($sth->rowCount() === 0)
-		{
+		if ( ! $sth->rowCount())
 			$errorMessage = Flux::message('FailedToUpdateTicket');
-		} else {
+		else
 			$successMessage = Flux::message('SuccessToUpdateTicket');
-		}
 	}
 }
 
@@ -117,11 +96,9 @@ if (isset($_POST['delete']))
 		$sth = $server->connection->getStatement($sql);
 		$sth->execute(array($ticket_id));
 
-		if ($sth->rowCount() === 0)
-		{
+		if ( ! $sth->rowCount())
 			$errorMessage = Flux::message('TicketDeleteFailed');
-		} else {
-
+		else {
 			$sql = "DELETE FROM $tableName2 WHERE ticket_id = ?";
 			$sth = $server->connection->getStatement($sql);
 			$sth->execute(array($ticket_id));
@@ -141,15 +118,11 @@ $sth  = $server->connection->getStatement($sql);
 $sth->execute($bind);
 $ticket_res = $sth->fetch();
 
-if ($sth->rowCount() === 0)
-{
+if ( ! $sth->rowCount())
 	$ticket_res = NULL;
-} else {
-	if ($session->account->account_id != $ticket_res->account_id && $session->account->$group_col < getDepartment($server, $ticket_res->id)->group_id)
-	{
-		$ticket_res = NULL;
-	}
-}
+else
+if ($session->account->account_id != $ticket_res->account_id && $session->account->$group_col < getDepartment($server, $ticket_res->id)->group_id)
+	$ticket_res = NULL;
 
 if (count($ticket_res))
 {

@@ -3,7 +3,7 @@ $this->loginRequired();
 require_once('function.php');
 require_once 'Flux/Mailer.php';
 Flux::config('MailerFromName', Flux::config('SupportFromName'));
-$mail = new Flux_Mailer();
+$mail = @new Flux_Mailer();
 $group_col = getGroupCol($server);
 
 $title = Flux::message('SupportCreateTitle');
@@ -28,42 +28,33 @@ if (isset($_POST['account_id']))
 
 	// subject doesn't meet the minimum length
 	if (strlen($subject) < Flux::config('SubjectMinLen'))
-	{
 		$errorMessage = sprintf(Flux::message('SubjectMin'), Flux::config('SubjectMinLen'));
-	} else
-
+	else
 	// subject doesn't meet the maximum length
 	if (strlen($subject) > Flux::config('SubjectMaxLen'))
-	{
 		$errorMessage = sprintf(Flux::message('SubjectMax'), Flux::config('SubjectMaxLen'));
-	} else
-
+	else
 	// check for subject characters
 	if (!preg_match(Flux::config('SubjectChar'), $subject))
-	{
 		$errorMessage = Flux::message('SubjectChar');
-	} else
-
+	else
 	// error occured from department
 	if (!getDepartment($server, $department))
-	{
 		$errorMessage = sprintf(Flux::message('SupportError'), 1);
-	} else
-
+	else
 	// error occured from priority
 	if ($priority > 2)
-	{
 		$errorMessage = sprintf(Flux::message('SupportError'), 2);
-	} else {
+	else {
 
 		// check if character exists
-		if ($char_id !== 0)
+		if ($char_id)
 		{
 			$sql = "SELECT char_id FROM $server->loginDatabase.char WHERE char_id = ?";
 			$sth = $server->connection->getStatement($sql);
 			$sth->execute(array($char_id));
 
-			if ($sth->rowCount() === 0)
+			if ( ! $sth->rowCount())
 			{
 				$errorMessage = Flux::message('CharNotExists');
 			}
@@ -71,31 +62,25 @@ if (isset($_POST['account_id']))
 
 		// message doesn't meet minimum length
 		if (strlen($message) < Flux::config('MessageMinLen'))
-		{
 			$errorMessage = sprintf(Flux::message('MessageMin'), Flux::config('MessageMinLen'));
-		} else
-
+		else
 		// message doesn't meet maximum length
 		if (strlen($message) > Flux::config('MessageMaxLen'))
-		{
 			$errorMessage = sprintf(Flux::message('MessageMax'), Flux::config('MessageMaxLen'));
-		} else 
-
-		if (Flux::config('TicketDelay') > 0)
+		else
+		if (Flux::config('TicketDelay'))
 		{
 			// check if already submitted a ticket
 			$sql = "SELECT datetime_submitted FROM $server->loginDatabase.$support_tickets WHERE account_id = ? ORDER BY id DESC LIMIT 1";
 			$sth = $server->connection->getStatement($sql);
 			$sth->execute(array((int) $account_id));
 
-			if ($sth->rowCount() !== 0)
+			if ($sth->rowCount())
 			{
 				$timestamp = $sth->fetch()->datetime_submitted;
 
 				if (strtotime("+".Flux::config('TicketDelay').' hours', strtotime($timestamp)) > time())
-				{
 					$errorMessage = sprintf(Flux::message('TicketAlreadySubmitted'), getTimeLeft(strtotime("+".Flux::config('TicketDelay').' hours', strtotime($timestamp))));
-				}
 			}
 		}
 	}
@@ -121,7 +106,7 @@ if (isset($_POST['account_id']))
 		);
 		$sth->execute($bind);
 
-		if ($sth->rowCount() === 0)
+		if ( ! $sth->rowCount())
 		{
 			$errorMessage = sprintf(Flux::message('SupportError'), 3);
 		} else {
@@ -133,7 +118,6 @@ if (isset($_POST['account_id']))
 
 			if (Flux::config('EnableSubscribing'))
 			{
-
 				$sql = "SELECT * FROM $server->loginDatabase.login WHERE $group_col >= ?";
 				$sth = $server->connection->getStatement($sql);
 				$sth->execute(array(AccountLevel::LOWGM));
@@ -169,12 +153,9 @@ if (isset($_POST['account_id']))
 				);
 
 				if ($sent)
-				{
 					$this->redirect(getURL($ticket_id, $this->url('support', 'view')));
-				} else {
-
+				else
 					$errorMessage = sprintf(Flux::message('SupportError'), 4);
-				}
 
 			} else {
 				$this->redirect(getURL($ticket_id, $this->url('support', 'view')));
@@ -190,14 +171,12 @@ if (Flux::config('TicketDelay') > 0)
 	$sth = $server->connection->getStatement($sql);
 	$sth->execute(array((int) $account_id));
 
-	if ($sth->rowCount() !== 0)
+	if ($sth->rowCount())
 	{
 		$timestamp = $sth->fetch()->datetime_submitted;
 
 		if (strtotime("+".Flux::config('TicketDelay').' hours', strtotime($timestamp)) > time())
-		{
 			$unavailable = true;
-		}
 	}
 }
 

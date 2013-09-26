@@ -5,7 +5,9 @@
 <?php elseif (!empty($successMessage)): ?>
 	<p class="green"><?php echo htmlspecialchars($successMessage) ?></p>
 <?php endif ?>
-<?php if (is_null($unavailable)): ?>
+<?php if ( ! getDepartment($server)): ?>
+	<p class="message"><?php echo Flux::message('NoDepartmentAvailable') ?></p>
+<?php elseif (is_null($unavailable)): ?>
 <form action="<?php echo $this->urlWithQs ?>" method="post" class="generic-form">
 	<input type='hidden' name='account_id' value='<?= htmlspecialchars($session->account->account_id) ?>' />
 	<input type='hidden' name='email' value='<?= htmlspecialchars($session->account->email) ?>' />

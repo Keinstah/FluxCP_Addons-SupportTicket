@@ -366,7 +366,7 @@ if (isset($_POST['take_action']))
 			{
 				$errorMessage = Flux::message('InsufficientPermission');
 			} else {
-				$sql = "SELECT email, priority, subscribe, subject FROM $server->loginDatabase.$tableName WHERE id = ?";
+				$sql = "SELECT email, priority, subscribe, subject FROM $tableName WHERE id = ?";
 				$sth = $server->connection->getStatement($sql);
 				$sth->execute(array($ticket_id));
 				$res = $sth->fetch();

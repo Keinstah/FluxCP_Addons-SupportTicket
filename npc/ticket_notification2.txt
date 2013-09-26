@@ -1,0 +1,77 @@
+-	script	atcmd_ticket_notify2	-1,{
+	
+	OnPCLoginEvent:
+		set .@timer, 1; // 1 minute
+		set .@forceNotify, 0; // will show 0 unread support tickets.
+		
+		while(1) {
+			set .@unreadmsg$, "You have %d unread support tickets.";
+			set .@sql$, "SELECT id, department, ticket_read FROM cp_support_tickets WHERE ";
+			
+			if (getgmlevel() > 0) {
+				set .@sql$, .@sql$ + "1";
+			} else {
+				set .@sql$, .@sql$ + "account_id = " + getcharid(3) + " AND unread = 1";
+			}
+			set .@count, query_sql(.@sql$, @id, @department, @ticket_read$);
+			if (.@count) {
+				if (getgmlevel() == 0) {
+					dispbottom(sprintf(.@unreadmsg$, .@count));
+				} else
+				if (.@count > 1) {
+					set .@ticket_count, 0;
+					
+					for (set .@i, 0; .@i < getarraysize(@id); .@i++) {
+						set .@isRead, 0;
+						
+						query_sql("SELECT group_id FROM cp_support_dep WHERE id = " + @department[.@i], @group_id);
+						
+						if (@ticket_read$ != "") {
+							explode(.@tickets_read$, @ticket_read$[.@i], ",");
+							
+							for (set .@j, 0; .@j < getarraysize(.@tickets_read$); .@j++) {
+								if (atoi(.@tickets_read$[.@j]) == getcharid(3)) {
+									set .@isRead, 1;
+									break;
+								}
+							}
+						}
+						
+						if (@group_id <= getgmlevel() && .isRead == 0) {
+							.@ticket_count++;
+						}
+					}
+					dispbottom(sprintf(.@unreadmsg$, .@count));
+				} else {
+					query_sql("SELECT group_id FROM cp_support_dep WHERE id = " + @department, @group_id);
+					set .@isRead, 0;
+					
+					if (@ticket_read$ != "") {
+						explode(.@tickets_read$, @ticket_read$, ",");
+							
+						for (set .@j, 0; .@j < getarraysize(.@tickets_read$); .@j++) {
+							if (atoi(.@tickets_read$[.@j]) == getcharid(3)) {
+								set .@isRead, 1;
+							}
+						}
+					}
+					
+					if (@group_id <= getgmlevel() && .@isRead == 0) {
+						if (.@forceNotify && .@count == 0) {
+							dispbottom(sprintf(.@unreadmsg$, 0));
+						} else 
+						if (.@count > 0) {
+							dispbottom(sprintf(.@unreadmsg$, .@count));
+						}
+					} else {
+						
+						if (.@forceNotify) dispbottom(sprintf(.@unreadmsg$, 0));
+					}
+				}
+			} else {
+				if (.@forceNotify) dispbottom(sprintf(.@unreadmsg$, 0));
+			}
+			sleep2 .@timer * 60000;
+		}
+	end;
+}

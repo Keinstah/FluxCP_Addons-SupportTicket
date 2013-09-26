@@ -99,5 +99,5 @@
 	}
 </script>
 <?php else: ?>
-<p class='message'><?= Flux::message('NoTicket') ?></p>
+<p class='message'><?= Flux::message('NoTicketList') ?></p>
 <?php endif ?>

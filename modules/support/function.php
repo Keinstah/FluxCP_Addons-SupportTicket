@@ -31,19 +31,15 @@ if (!function_exists("getTimeLeft"))
 		$seconds = floor($temp);
 
 		if ($days > 0)
-		{
 			return $days.($days > 1 ? " days left" : " day left");
-		} else
+		else
 		if ($hours > 0)
-		{
 			return $hours.($hours > 1 ? " hours left" : " hour left");
-		} else
+		else
 		if ($minutes > 0)
-		{
 			return $minutes.($minutes > 1 ? " minutes left" : " minute left");
-		} else {
+		else
 			return $seconds.($seconds > 1 ? " seconds left" : " second left");
-		}
 	}
 }
 
@@ -111,11 +107,9 @@ if (!function_exists("getURL"))
 	function getURL($id, $url)
 	{
 		if (Flux::config('UseCleanUrls'))
-		{
 			$url .= "?id=".$id;
-		} else {
+		else
 			$url .= "&id=".$id;
-		}
 
 		return $url;
 	}
@@ -134,7 +128,7 @@ if (!function_exists("getDepartment"))
 
 		$sql = "SELECT * FROM $tableName3";
 
-		if (!is_null($id))
+		if ( ! is_null($id))
 		{
 			$sql .= " WHERE id = ?";
 			$bind = array((int)$id);
@@ -145,8 +139,12 @@ if (!function_exists("getDepartment"))
 		$sth = $server->connection->getStatement($sql);
 		$sth->execute($bind);
 
-		if ($sth->rowCount() === 0) return FALSE;
-		if (!is_null($id) && $sth->rowCount() === 1) return $sth->fetch()	;
+		if ($sth->rowCount() === 0)
+			return FALSE;
+
+		if (!is_null($id) && $sth->rowCount()) 
+			return $sth->fetch();
+
 		return $sth->fetchAll();
 	}
 }
@@ -179,21 +177,17 @@ if (!function_exists("getNickname"))
 		$sth = $server->connection->getStatement($sql);
 		$sth->execute(array($account_id));
 
-		if ($sth->rowCount() === 0)
+		if ( ! $sth->rowCount())
 		{
 			$sql = "SELECT userid FROM $server->loginDatabase.login WHERE account_id = ? LIMIT 1";
 			$sth = $server->connection->getStatement($sql);
 			$sth->execute(array($account_id));
 
-			if ($sth->rowCount() === 0)
-			{
+			if ( ! $sth->rowCount())
 				return "None";
-			} else {
-
+			else
 				return $sth->fetch()->userid;	
-			}
 		} else {
-
 			return $sth->fetch()->nickname;
 		}
 	}
@@ -227,20 +221,24 @@ if (!function_exists("isRead"))
 			$sth = $server->connection->getStatement($sql_group);
 			$sth->execute(array($group_id, $ticket_res->department));
 
-			if ($sth->rowCount() === 0)
+			if ( ! $sth->rowCount())
 			{
 				return TRUE;
 			} else {
 				$ticket_read = explode(",", $ticket_res->ticket_read);
 
-				if (count($ticket_read) !== 0)
+				if (count($ticket_read))
 				{
-					if (in_array($account_id, $ticket_read)) return TRUE;
+					if (in_array($account_id, $ticket_read))
+						return TRUE;
+
 					return FALSE;
 				}
 			}
 		} else {
-			if ($ticket_res->unread == 1) return FALSE;
+			if ($ticket_res->unread == 1)
+				return FALSE;
+
 			return TRUE;
 		}
 	}
@@ -255,14 +253,16 @@ if (!function_exists("getCharAffected"))
 	function getCharAffected($char_id, $server)
 	{
 		// char_id is invalid
-		if ((int)$char_id === 0) return FALSE;
+		if ((int)$char_id === 0)
+			return FALSE;
 
 		$sql = "SELECT name FROM $server->loginDatabase.char WHERE char_id = ?";
 		$sth = $server->connection->getStatement($sql);
 		$sth->execute(array((int) $char_id));
 
 		// row doesn't exists
-		if ($sth->rowCount() === 0) return FALSE;
+		if ($sth->rowCount())
+			return FALSE;
 
 		// return the char name
 		return $sth->fetch()->name; 
@@ -278,7 +278,8 @@ if (!function_exists("getGroupID"))
 	function getGroupID($account_id, $server)
 	{
 		// account_id is invalid
-		if ((int)$account_id === 0) return FALSE;
+		if ((int)$account_id === 0)
+			return FALSE;
 
 		$col = getGroupCol($server);
 		$sql = "SELECT $col FROM $server->loginDatabase.login WHERE account_id = ?";
@@ -286,7 +287,8 @@ if (!function_exists("getGroupID"))
 		$sth->execute(array((int) $account_id));
 
 		// row doesn't exists
-		if ($sth->rowCount() === 0) return FALSE;
+		if ( ! $sth->rowCount())
+			return FALSE;
 
 		// return the char name
 		return $sth->fetch()->$col; 
@@ -304,6 +306,7 @@ if (!function_exists("getGroupCol"))
 		$sql = "SHOW COLUMNS FROM $server->loginDatabase.login LIKE 'group_id'";
 		$sth = $server->connection->getStatement($sql);
 		$sth->execute();
+
 		return ($sth->rowCount() ? 'group_id' : 'level');
 	}
 }
@@ -321,49 +324,56 @@ if (!function_exists("isSubscribed"))
 		$group_col 		 = getGroupCol($server);
 
 		// account_id is invalid
-		if ((int)$account_id === 0) return FALSE;
-		if ((int)$ticket_id === 0) return FALSE;
+		if ((int)$account_id === 0)
+			return FALSE;
+
+		if ((int)$ticket_id === 0) 
+			return FALSE;
 
 		$sql = "SELECT $group_col FROM $server->loginDatabase.login WHERE account_id = ? LIMIT 1";
 		$sth = $server->connection->getStatement($sql);
 		$sth->execute(array((int) $account_id));
 
-		if ($sth->rowCount() === 0) return FALSE;
+		if ( ! $sth->rowCount()) 
+			return FALSE;
 
 		if ($sth->fetch()->$group_col >= AccountLevel::LOWGM)
 		{
 			$sql = "SELECT subscribe FROM $server->loginDatabase.$support_dep WHERE account_id = ? LIMIT 1";
 			$sth->execute(array((int) $account_id));
 
-			if ($sth->rowCount() === 0) return FALSE;
-			if ($sth->fetch()->subscribe == 1) return TRUE;
+			if ( ! $sth->rowCount())
+				return FALSE;
+
+			if ($sth->fetch()->subscribe == 1)
+				return TRUE;
 		}
 
 		$sql = "SELECT account_id, unsubscribe, subscribe FROM $server->loginDatabase.$support_tickets WHERE id = ? LIMIT 1";
 		$sth = $server->connection->getStatement($sql);
 		$sth->execute(array((int) $ticket_id));
 
-		if ($sth->rowCount() === 1)
+		if ($sth->rowCount())
 		{
 			$res = $sth->fetch();
 			if ($res->account_id == $account_id)
 			{
 				if ($res->subscribe == 1)
-				{
 					return TRUE;
-				} else {
+				else
 					return FALSE;
-				}
 			}
 			
-			if (is_null($res->unsubscribe)) return TRUE;
+			if (is_null($res->unsubscribe))
+				return TRUE;
 
 			$unsubscribe = explode(",", $res->unsubscribe);
-			if (in_array($account_id, $unsubscribe)) return FALSE;
+
+			if (in_array($account_id, $unsubscribe))
+				return FALSE;
 
 			return TRUE;
 		} else {
-
 			return FALSE;
 		}
 		
@@ -384,6 +394,7 @@ function getUnread($account_id, $server, $group_id) {
 	// fetch all ticket id
 	$sql = "SELECT id FROM $tableName WHERE ";
 	$bind = array();
+
 	if ($group_id < AccountLevel::LOWGM)
 	{
 		$sql .= "account_id = ?";
@@ -394,21 +405,21 @@ function getUnread($account_id, $server, $group_id) {
 	$sth = $server->connection->getStatement($sql);
 	$sth->execute($bind);
 
-	if ($sth->rowCount() === 0) return "0";
+	if ( ! $sth->rowCount())
+		return "0";
+
 	$num = 0;
 	
 	foreach ($sth->fetchAll() as $row)
-	{
 		if (!isRead($account_id, $group_id, $row->id, $server))
-		{
 			$num++;
-		}
-	}
 
 	return (int) $num;
 };
 $unread = 0;
 $group_col = getGroupCol($server);
-if ($session->isLoggedIn()) $unread = getUnread($session->account->account_id, $session->loginAthenaGroup, $session->account->$group_col);
+
+if ($session->isLoggedIn())
+	$unread = getUnread($session->account->account_id, $session->loginAthenaGroup, $session->account->$group_col);
 
 ?>
