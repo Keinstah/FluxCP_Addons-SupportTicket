@@ -225,7 +225,7 @@ if (isset($_POST['take_action']))
 						$sth = $server->connection->getStatement($sql);
 						$sth->execute(array($ticket_id));
 
-						if ( 1 $sth->rowCount())
+						if ( ! $sth->rowCount())
 						{
 							$errorMessage = Flux::message('TicketCloseFailed');
 							break;
