@@ -99,9 +99,6 @@
 	}
 </script>
 <?php else: ?>
-<<<<<<< HEAD
-<p class='message'><?= Flux::message('NoTicketList') ?></p>
-=======
-<p class='message'><?php echo Flux::message('NoTicket') ?></p>
->>>>>>> 23ad0e42cbffa08e4629cecdceff37ebad84ee15
+	<p class='message'><?= Flux::message('NoTicketList') ?></p>
+	<p class='message'><?php echo Flux::message('NoTicket') ?></p>
 <?php endif ?>
